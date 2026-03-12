@@ -92,8 +92,8 @@ jobs:
             echo "Applying $patch"
             patch -p1 < "$patch"
           done
-
           echo "Wild Kernels patches applied successfully"
+          
     - name: Build kernel
       run: |
         cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
