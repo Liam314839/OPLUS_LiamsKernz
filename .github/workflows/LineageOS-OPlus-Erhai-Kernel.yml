@@ -53,6 +53,9 @@ jobs:
         cd $GITHUB_WORKSPACE/kernel_workspace
         git clone --recursive https://github.com/LineageOS/android_kernel_oneplus_sm8750-modules -b lineage-23.2 sm8750-modules --depth=1
         sed -i '$a CONFIG_ERHAI_DTB=y' $GITHUB_WORKSPACE/kernel_workspace/android-kernel/arch/arm64/configs/vendor/oplus/sun_perf.config
+        sed -i '$a CONFIG_KSU=y' $GITHUB_WORKSPACE/kernel_workspace/android-kernel/arch/arm64/configs/vendor/oplus/sun_perf.config
+        sed -i '$a CONFIG_KSU_SUSFS=y' $GITHUB_WORKSPACE/kernel_workspace/android-kernel/arch/arm64/configs/vendor/oplus/sun_perf.config
+
 
     - name: Setup official KernelSU-Next
       run: |
@@ -79,6 +82,18 @@ jobs:
         cd ..
         patch -p1 < 50_add_susfs_in_kernel.patch  
 
+    - name: Apply Wild Kernels patches
+      run: |
+          cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
+          echo "Cloning wildpatches..."
+          git clone https://github.com/Liam31489/wildpatches
+          echo "Applying Wild Kernels patches..."
+          for patch in wildpatches/*.patch; do
+            echo "Applying $patch"
+            patch -p1 < "$patch"
+          done
+
+          echo "Wild Kernels patches applied successfully"
     - name: Build kernel
       run: |
         cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
