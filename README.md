@@ -10,4 +10,4 @@
 - **simonpunk** for SUSFS patches (branch `gki-android15-6.6`):  
   [https://gitlab.com/simonpunk/susfs4ksu](https://gitlab.com/simonpunk/susfs4ksu)
 
-- **Wild Kernels team** for KernelSU-Next patches
+- **Wild Kernels team** for patches required to fix failed hunks:
