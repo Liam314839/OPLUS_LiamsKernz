@@ -47,26 +47,26 @@ jobs:
     - name: Download kernel source
       run: |
         cd $GITHUB_WORKSPACE/kernel_workspace
-        git clone --recursive https://github.com/LineageOS/android_kernel_oneplus_sm8750 -b lineage-23.2 android-kernel --depth=1
-        cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel/scripts
+        git clone --recursive https://github.com/LineageOS/android_kernel_oneplus_sm8750 -b lineage-23.2 sm8750 --depth=1
+        cd $GITHUB_WORKSPACE/kernel_workspace/sm8750/scripts
         sed -i 's/ -dirty//g' setlocalversion
         cd $GITHUB_WORKSPACE/kernel_workspace
         git clone --recursive https://github.com/LineageOS/android_kernel_oneplus_sm8750-modules -b lineage-23.2 sm8750-modules --depth=1
-        sed -i '$a CONFIG_DODGE_DTB=y' $GITHUB_WORKSPACE/kernel_workspace/android-kernel/arch/arm64/configs/vendor/oplus/sun_perf.config
-        sed -i '$a CONFIG_KSU=y' $GITHUB_WORKSPACE/kernel_workspace/android-kernel/arch/arm64/configs/vendor/oplus/sun_perf.config
-        sed -i '$a CONFIG_KSU_SUSFS=y' $GITHUB_WORKSPACE/kernel_workspace/android-kernel/arch/arm64/configs/vendor/oplus/sun_perf.config
+        sed -i '$a CONFIG_DODGE_DTB=y' $GITHUB_WORKSPACE/kernel_workspace/sm8750/arch/arm64/configs/vendor/oplus/sun_perf.config
+        sed -i '$a CONFIG_KSU=y' $GITHUB_WORKSPACE/kernel_workspace/sm8750/arch/arm64/configs/vendor/oplus/sun_perf.config
+        sed -i '$a CONFIG_KSU_SUSFS=y' $GITHUB_WORKSPACE/kernel_workspace/sm8750/arch/arm64/configs/vendor/oplus/sun_perf.config
 
 
     - name: Setup official KernelSU-Next
       run: |
-        cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
+        cd $GITHUB_WORKSPACE/kernel_workspace/sm8750
         curl -LSs "https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/next/kernel/setup.sh" | bash -s main
         KSU_VERSION=$(cd KernelSU-Next && expr $(/usr/bin/git rev-list --count HEAD) + 20000)
         echo "KSUVER=$KSU_VERSION" >> $GITHUB_ENV
 
     - name: Setup susfs4ksu
       run: |
-        cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
+        cd $GITHUB_WORKSPACE/kernel_workspace/sm8750
         echo "Cloning susfs4ksu..."
         git clone --depth=1 -b gki-android15-6.6 https://gitlab.com/simonpunk/susfs4ksu.git
         echo "Copying patch files..."
@@ -84,7 +84,7 @@ jobs:
 
     - name: Apply Wild Kernels patches
       run: |
-          cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel/KernelSU-Next
+          cd $GITHUB_WORKSPACE/kernel_workspace/sm8750/KernelSU-Next
           echo "Cloning wildpatches..."
           git clone https://github.com/Liam314839/wildpatches
           echo "Applying Wild Kernels patches..."
@@ -96,7 +96,7 @@ jobs:
           echo "Wild Kernels patches applied successfully"
     - name: Build kernel
       run: |
-        cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
+        cd $GITHUB_WORKSPACE/kernel_workspace/sm8750
         LTO=thin
         export ARCH=arm64
         export SUBARCH=arm64
@@ -115,7 +115,7 @@ jobs:
     - name: Check kernel output files
       run: |
        cd $GITHUB_WORKSPACE/kernel_workspace
-       if [ -f android-kernel/out/arch/arm64/boot/Image ]; then
+       if [ -f sm8750/out/arch/arm64/boot/Image ]; then
            echo "CHECK_IMAGE=true" >> $GITHUB_ENV
        else
            echo "Kernel output file is empty"
@@ -128,14 +128,14 @@ jobs:
         cd $GITHUB_WORKSPACE/kernel_workspace
         git clone https://github.com/Kernel-SU/AnyKernel3 --depth=1
         rm -rf AnyKernel3/.git
-        cp android-kernel/out/arch/arm64/boot/Image AnyKernel3/
+        cp sm8750/out/arch/arm64/boot/Image AnyKernel3/
   
     - name: Upload Image
       if: env.CHECK_IMAGE == 'true'
       uses: actions/upload-artifact@v4
       with:
         name: Image-Official-KSU_${{ env.KSUVER }}
-        path: kernel_workspace/android-kernel/out/arch/arm64/boot/Image
+        path: kernel_workspace/sm8750/out/arch/arm64/boot/Image
 
     - name: Upload AnyKernel3
       if: env.CHECK_IMAGE == 'true'
