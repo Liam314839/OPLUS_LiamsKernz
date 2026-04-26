@@ -134,7 +134,7 @@ jobs:
       if: env.CHECK_IMAGE == 'true'
       uses: actions/upload-artifact@v4
       with:
-        name: Image-Official-KSU_${{ env.KSUVER }}
+        name: Image-Official-KSUN_${{ env.KSUVER }}
         path: kernel_workspace/sm8750/out/arch/arm64/boot/Image
 
     - name: Upload AnyKernel3
