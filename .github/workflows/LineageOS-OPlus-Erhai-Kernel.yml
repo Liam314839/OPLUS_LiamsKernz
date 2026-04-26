@@ -1,4 +1,4 @@
-name: Build LineageOS kernel for OnePlus Pad 3 and OnePlus Pad 2 Pro with KernelSU-Next and SUSFS support
+name: Build LineageOS kernel for OnePlus Pad 3 and OnePlus Pad 2 Pro with KernelSU-Next and SuSFS support
 
 on:
   workflow_dispatch:
