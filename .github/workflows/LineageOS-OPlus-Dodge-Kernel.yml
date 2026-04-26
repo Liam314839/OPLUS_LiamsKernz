@@ -1,4 +1,4 @@
-name: Build LineageOS kernel for OnePlus 13 with KernelSU-Next and SUSFS support
+name: Build LineageOS kernel for OnePlus 13 with KernelSU-Next and SuSFS support
 
 on:
   workflow_dispatch:
